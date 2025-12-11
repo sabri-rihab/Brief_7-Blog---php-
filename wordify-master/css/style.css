@@ -1371,3 +1371,11 @@ blockquote {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+
+
+
+  .login_form {
+    border: 1px solid red;
+    justify-self: center;
+    padding: 5rem;
+  }
