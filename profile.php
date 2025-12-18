@@ -144,6 +144,24 @@ $userInfo = getUserById($pdo, $user_id)
             width: 100%;
             margin-top: 10px;
         }
+        button[name="delete_article"] {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button[name="delete_article"]:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
     </style>  
     <body>
     
@@ -369,6 +387,10 @@ $userInfo = getUserById($pdo, $user_id)
                                 <!-- end comments  -->
                             </details>
                         </div>
+                        <form action="deleteArticle.php" method="post">
+                            <input type="hidden" name="article_id" value="<?php echo $article['_id']; ?>">
+                            <button type="submit" name="delete_article">Delete</button>
+                        </form>
                     </div>
                 </div>
             </article>

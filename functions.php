@@ -140,4 +140,10 @@ function addArticle($pdo, $title, $content, $image, $catg_id, $user_id, $status)
     $sql->execute([$title, $content, $image, $status, $user_id, $catg_id]);           
 }
 
+/*----------------------   delete Article  -------------------------------------*/
+function deleteArticle($pdo, $article_id){
+    $sql = "DELETE FROM articles WHERE _id = ?";
+    $stm = $pdo->prepare($sql);
+    $stm->execute([$article_id]);
+}
 ?>
