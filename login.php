@@ -255,34 +255,6 @@
       <!-- END header -->
 
       <!--  Start ------------------------------------------------------------------------------->
-      <!--<form class="login_form" action="#" method="post">
-                  <div class="row">
-                    <div class="col-md-12 form-group">
-                      <label for="name">Name</label>
-                      <input type="text" id="name" class="form-control ">
-                    </div> 
-                    <div class="col-md-12 form-group">
-                      <label for="email">Email</label>
-                      <input type="email" id="email" class="form-control ">
-                    </div>
-                    <div class="col-md-12 form-group">
-                      <label for="phone">Password</label>
-                      <input type="password" id="password" class="form-control ">
-                    </div>
-
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12 form-group">
-                      <label for="message">Write Message</label>
-                      <textarea name="message" id="message" class="form-control " cols="30" rows="8"></textarea>
-                    </div>
-                  </div> 
-                  <div class="row">
-                    <div class="col-md-6 form-group">
-                      <input type="submit" value="LogIn" class="btn btn-primary">
-                    </div>
-                  </div>
-                </form> -->
       <div class="form_container">
         <div class="form-header">
           <div class="tab active" onclick="switchForm('login')">Login</div>
@@ -291,44 +263,46 @@
 
         <div class="form-container">
           <div class="form-content active" id="loginForm">
-            <form action="#" method="post">
+            <form action="signin.php" method="post">
               <div class="form-group">
                 <label for="login-email">Email</label>
-                <input type="email" id="login-email" required />
+                <input name="email" type="email" id="login-email" required />
               </div>
               <div class="form-group">
                 <label for="login-password">Password</label>
-                <input type="password" id="login-password" required />
+                <input name="password" type="password" id="login-password" required />
                 <div class="forgot-password">
                   <a href="#">Forgot password?</a>
                 </div>
               </div>
-              <button type="submit" class="btn-submit">Login</button>
+              <button name="submit" type="submit" class="btn-submit">Login</button>
             </form>
           </div>
 
           <div class="form-content" id="signupForm">
-            <form action="#" method="post">
-              <div class="form-group">
-                <label for="signup-username">Username</label>
-                <input type="text" id="signup-username" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-email">Email</label>
-                <input type="email" id="signup-email" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-password">Password</label>
-                <input type="password" id="signup-password" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-confirm">Confirm Password</label>
-                <input type="password" id="signup-confirm" required />
-              </div>
-              <button type="submit" class="btn-submit">Sign Up</button>
-            </form>
+              <form action="signup.php" method="post">        
+                  <div class="form-group">
+                      <label for="signup-username">Username</label>
+                      <input type="text" id="signup-username" name="username" required 
+                            value="" />
+                  </div>
+                  <div class="form-group">
+                      <label for="signup-email">Email</label>
+                      <input type="email" id="signup-email" name="email" required 
+                            value="" />
+                  </div>
+                  <div class="form-group">
+                      <label for="signup-password">Password</label>
+                      <input type="password" id="signup-password" name="password" required />
+                  </div>
+                  <div class="form-group">
+                      <label for="signup-confirm">Confirm Password</label>
+                      <input type="password" id="signup-confirm" name="confirm_password" required />
+                  </div>
+                  <button type="submit" class="btn-submit" name ="submit">Sign Up</button>
+              </form>
           </div>
-        </div>
+      </div>
       </div>
 
       <script>
