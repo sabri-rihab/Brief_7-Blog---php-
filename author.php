@@ -70,9 +70,6 @@
                 <li class="nav-item">
                   <a class="nav-link active" href="index.html">Home</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Business</a>
-                </li>
 
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="category.html" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
@@ -80,10 +77,9 @@
                     <?php foreach ($categories as $catg){ ?>
                       <a class="dropdown-item" href="#"> <?php echo $catg["name"]?> </a>
                     <?php }?>
-
                   </div>
-
                 </li>
+
                 <li class="nav-item">
                   <a class="nav-link" href="profile.php">Profile</a>
                 </li>

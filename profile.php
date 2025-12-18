@@ -6,7 +6,15 @@ print_r($user_id);
 require 'db.php';
 require 'functions.php';
 
+$categories = showCategories($pdo);
+
+if(isset($_POST['delete_comment'])){
+  $comment_id = $_POST['comment_id'];
+  deleteComment($pdo, $comment_id);
+}
+
 $articles = getUsersArticles($pdo, $user_id);
+$userInfo = getUserById($pdo, $user_id)
 ?>
 <!doctype html>
 <html lang="en">
@@ -29,7 +37,115 @@ $articles = getUsersArticles($pdo, $user_id);
     <!-- Theme Style -->
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body>
+ <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 3% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            height: 50px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-lg {
+            padding: 14px 28px;
+            font-size: 18px;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>  
+    <body>
     
 <?php print_r($user_id);?>
     <div class="wrap">
@@ -73,26 +189,30 @@ $articles = getUsersArticles($pdo, $user_id);
                 <li class="nav-item">
                   <a class="nav-link" href="author.php">Home</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Business</a>
-                </li>
 
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="category.html" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
                   <div class="dropdown-menu" aria-labelledby="dropdown05">
-                    <a class="dropdown-item" href="category.html">Lifestyle</a>
-                    <a class="dropdown-item" href="category.html">Food</a>
-                    <a class="dropdown-item" href="category.html">Adventure</a>
-                    <a class="dropdown-item" href="category.html">Travel</a>
-                    <a class="dropdown-item" href="category.html">Business</a>
+                    <?php foreach ($categories as $catg){ ?>
+                      <a class="dropdown-item" href="#"> <?php echo $catg["name"]?> </a>
+                    <?php }?>
                   </div>
+                </li>
 
-                </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="about.html">About</a>
+                  <a class="nav-link" href="profile.php">Profile</a>
                 </li>
+
                 <li class="nav-item">
-                  <a class="nav-link" href="login.php">Login</a>
+                    <?php 
+                      if(isset($_SESSION['user_id'])){
+                          echo '<a class="nav-link" href="logout.php">Logout</a>';
+                      } else {
+                          echo '<a class="nav-link" href="login.php">Login</a>';
+                      }
+                      ?>
+                </li>
+
                 </li>
               </ul>
               
@@ -110,68 +230,97 @@ $articles = getUsersArticles($pdo, $user_id);
           <div class="col-md-12 col-lg-12 main-content">
             
 <!--  **********************************  personal info **************************************-->
-<div class="container">
+  <div class="container">
         <div class="header">
             <h2>Personnel Information</h2>
             <p>Account Details</p>
         </div>
-
         <div class="info-row">
             <div class="label">Username</div>
-            <div class="value">rihab</div>
+            <div class="value"><?php echo $userInfo['userName'] ?></div>
         </div>
 
         <div class="info-row">
             <div class="label">Email</div>
-            <div class="value">rihab@wordify.com</div>
-        </div>
-
-        <div class="info-row">
-            <div class="label">Password</div>
-            <div class="value password">••••••••••</div>
+            <div class="value"><?php echo $userInfo['email'] ?></div>
         </div>
 
         <div class="info-row">
             <div class="label">Account Created At</div>
-            <div class="value">December 17, 2025</div>
+            <div class="value"><?php echo $userInfo['created_at'] ?></div>
         </div>
 
         <div class="info-row">
             <div class="label">Posts</div>
             <div class="value">
-                <span class="posts-badge">5 Posts</span>
+                <span class="posts-badge"><?php echo count($articles)?> Posts</span>
             </div>
         </div>
-    </div><!--  **********************************  PSTS   **************************************-->
+    </div>
+
+
+    <!-- Create Post Button -->
+    <div class="text-center my-4">
+        <button type="button" class="btn btn-primary btn-lg" onclick="document.getElementById('createPostModal').style.display='block'">
+            Create a Post
+        </button>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('createPostModal').style.display='none'">&times;</span>
+            <h2 class="mb-4">Create New Post</h2>
+            
+            <form action="addArticle.php" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" name="content" class="form-control" rows="6" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="">Select a category</option>
+                        <option value="1">Technology</option>
+                        <option value="2">Lifestyle</option>
+                        <option value="business">Business</option>
+                        <option value="health">Health</option>
+                        <option value="travel">Travel</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+
+                <button type="submit" name="add_article" class="btn btn-success btn-block btn-lg">Create Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!--------------------------- Posts and commenst-----------------------------  -->
+
 <div class="row mb-5 mt-5">
               <div class="col-md-12 mb-5">
                 <h2>My Posts</h2>
               </div>
-
-
-              <?php foreach($articles as $article){ ?>
-                <div class="post-entry-horzontal">
-                  <a href="blog-single.html">
-                    <div class="image" style="background-image: url(images/img_10.jpg);"></div>
-                    <span class="text">
-                      <div class="post-meta">
-                        <span class="author mr-2"><img src="images/person_1.jpg" alt="Colorlib"><?php echo $article['user_id'] ?></span>&bullet;
-                        <span class="mr-2"><?php echo $article["created_at"] ?></span> &bullet;
-                        <span class="ml-2"><span class="fa fa-comments"></span><?php
-                            $countComments = countComments($pdo, $article["_id"]);
-                            echo $countComments;
-                        ?></span>
-                      </div>
-                      <h2><?php echo $article["title"]   ?></h2>
-                    </span>
-                  </a>
-                </div>
-                <?php } ?>
-                <!-- END post -->
-
-
 <div class="articles-grid">
-            <?php foreach($articles as $article){ ?>
+  <?php foreach($articles as $article){ ?>
             <article class="article-card">
                 <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=400&fit=crop" alt="Article" class="article-image">
                 <div class="article-content">
@@ -183,6 +332,7 @@ $articles = getUsersArticles($pdo, $user_id);
                     <p class="article-text">
                         <?php echo $article['content'] ?>
                     </p>
+                    <a href="blog-single.php?id=<?php echo $article['_id'] ;?>">Read More</a>
                     <div class="article-footer">                        
                         <div class="comments-section">
                             <details>
@@ -198,29 +348,25 @@ $articles = getUsersArticles($pdo, $user_id);
                                         <path d="M7 10l5 5 5-5z"/>
                                     </svg>
                                 </summary>
+                                <!-- the comments   -->
+                                 <?php $comments = getArticleComments($pdo, $article['_id']);
+                                 foreach ($comments as $comment){?>
                                 <div class="comments-list">
                                     <div class="comment-item">
                                         <div class="comment-header">
-                                            <span class="comment-user">Sarah Johnson</span>
-                                            <button class="delete-btn" onclick="deleteComment(this)">Delete</button>
+                                            <span class="comment-user"><?php echo $comment['userName'] ?></span>
+
+                                            <form action="#" method="post">
+                                              <input type="hidden" name="comment_id" value= "<?php echo $comment['_id']; ?>">
+                                              <button type="submit" name="delete_comment" class="delete-btn">Delete</button>
+                                            </form>
+
                                         </div>
-                                        <p class="comment-content">Great article! These tips are really practical and easy to implement. I especially loved the part about focusing on customer retention.</p>
-                                    </div>
-                                    <div class="comment-item">
-                                        <div class="comment-header">
-                                            <span class="comment-user">Michael Chen</span>
-                                            <button class="delete-btn" onclick="deleteComment(this)">Delete</button>
-                                        </div>
-                                        <p class="comment-content">Thanks for sharing this. The advice on building a strong team really resonated with me. We're implementing some of these strategies right now!</p>
-                                    </div>
-                                    <div class="comment-item">
-                                        <div class="comment-header">
-                                            <span class="comment-user">Emma Williams</span>
-                                            <button class="delete-btn" onclick="deleteComment(this)">Delete</button>
-                                        </div>
-                                        <p class="comment-content">This is exactly what I needed to read today. Very insightful and motivating!</p>
+                                        <p class="comment-content"><?php echo $comment['content'] ?></p>
                                     </div>
                                 </div>
+                                  <?php } ?>
+                                <!-- end comments  -->
                             </details>
                         </div>
                     </div>
